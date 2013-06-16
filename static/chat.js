@@ -1,9 +1,10 @@
+/*
 Object.prototype.extend = function (obj) {
 	for (var prop in obj) {
 		this[prop] = obj[prop];
 	}
 }
-
+*/
 function ChatCtrl($scope) {
 	window.ng_scope = $scope;
 	$scope.conversation_name = 'My Chat';
