@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" ng-app>
+	<head>
+		<title>DaveChat</title>
+		<meta name="viewport" content="width=370" />
+		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+		<script src="chat.js"></script>
+	</head>
+	<body>
+		<div class="container" ng-controller="ChatCtrl">
+		    <div class="left-column">
+		    	<ul class="nav nav-tabs nav-stacked">
+					<li ng-repeat="chatter in chatters">
+			        	<a class="color-{{chatter.id}}">{{chatter.name}}</a>
+			    	</li>
+			    </ul>
+		    </div>
+		    <div class="right-column">
+				<div class="title-bar">
+					<h1>{{conversation_name}}</h1>
+				</div>
+				<div class="messages-box" id="messages-box">
+					<div class="message row-fluid color-{{getChatter(message.sender).id}}" ng-repeat="message in messages | orderBy: 'time'">
+			        	<strong class="sender span3" ng-hide="message.sender == undefined">{{message.sender}}: <br /><small>{{message.timeString()}}</small></strong>
+			        	<div class="message-text span9">{{message.text}}</div>
+			    	</div>
+				</div>
+				<form class="chat-box" ng-submit="sendMessage()">
+					<textarea ng-model="message_text"></textarea>
+					<input type="submit" value="send" class="btn" />
+				</form>
+		    </div>
+		</div>
+	</body>
+</html>

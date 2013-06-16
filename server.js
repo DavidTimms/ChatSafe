@@ -43,8 +43,28 @@ var SampleApp = function() {
         }
 
         //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
+
+        // TODO: replace with update cache function like pages
+        for (var i=0; i<self.static_files.length; i++) {
+            self.zcache[self.static_files[i]] = fs.readFileSync('./static/' + self.static_files[i]);
+        }
     };
+
+    self.dirFiles = function(dir_path) {
+        var file_list = [];
+        var dir_items =  fs.readdirSync(dir_path);
+
+        for (var i=0; i<dir_items.length; i++) {
+            var stats = fs.statSync(dir_path + dir_items[i]);
+            if (stats.isFile()) {
+                file_list.push(dir_items[i]);
+            }
+            else {
+                // dir_items[i] is a directory
+            }
+        }
+        return file_list;
+    }
 
 
     /**
@@ -100,17 +120,77 @@ var SampleApp = function() {
             res.send('1');
         };
 
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
+        self.routes['/'] = self.createStaticRoute('index.html');
 
-        self.routes['/'] = function(req, res) {
+        /*
+        // Add routes for uncached image files
+        for (var i=0; i<self.image_files.length; i++) {
+            console.log('Creating uncached route for ' + self.image_files[i]);
+            self.routes['/' + self.image_files[i]] = self.createUncachedRoute('./images/' + self.image_files[i]);
+        }
+        */
+
+        // Add routes for static files in cache
+        for (var i=0; i<self.static_files.length; i++) {
+            console.log('Creating cached route for ' + self.static_files[i]);
+            self.routes['/' + self.static_files[i]] = self.createStaticRoute(self.static_files[i]);
+        }
+
+        self.routes['/*'] = function (req, res) {
             res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
+            res.send('<html><body><h2>Sorry</h2><p>The page could not be found</p></body></html>');
+        }
+    };
+
+    self.createUncachedRoute = function(uncached_file) {
+        return function(req, res) {
+            var mime_type = self.mimeType[uncached_file.substring(uncached_file.lastIndexOf('.') + 1)];
+            if (mime_type === undefined) {
+                mimeType = "text/plain";
+            }
+            res.setHeader('Content-Type', mime_type);
+            fs.readFile(uncached_file, function (err, data) {
+                if (err) {
+                    console.log('Unable to read file ' + uncached_file);
+                    res.send("");
+                }
+                else {
+                    res.send(data);
+                }
+            });
+        }
+    }
+
+    self.createStaticRoute = function(static_file) {
+        return function(req, res) {
+            var mime_type = self.mimeType[static_file.substring(static_file.lastIndexOf('.') + 1)];
+            if (mime_type === undefined) {
+                mimeType = "text/plain";
+            }
+            res.setHeader('Content-Type', mime_type);
+            res.send(self.cache_get(static_file));
         };
     };
 
+    self.mimeType = {   txt: "text/plain",
+                        html: "text/html", 
+                        css: "text/css", 
+                        js: "text/javascript",
+                        xml: "text/xml",
+                        json: "application/json",
+                        png: "image/png",
+                        jpg: "image/jpeg",
+                        jpeg: "image/jpeg",
+                        gif: "image/gif"};
+
+
+    self.removeFileExtension = function(file_name) {
+        var slice = file_name.lastIndexOf('.');
+        if(slice > 0) {
+            return file_name.substring(0,slice);
+        }
+        return file_name;
+    }
 
     /**
      *  Initialize the server (express) and create the routes and register
@@ -132,6 +212,8 @@ var SampleApp = function() {
      */
     self.initialize = function() {
         self.setupVariables();
+        self.static_files = self.dirFiles('./static/');
+        //self.image_files = self.dirFiles('./images/');
         self.populateCache();
         self.setupTerminationHandlers();
 

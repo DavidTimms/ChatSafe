@@ -1,0 +1,119 @@
+html {
+  margin: 0px;
+  overflow-y: scroll;
+  height: 100%;
+  min-width: 840px; }
+
+body {
+  margin: 0px;
+  height: 100%; }
+
+a img {
+  outline: none;
+  border: none; }
+
+.left {
+  float: left; }
+
+.right {
+  float: right; }
+
+.left-column {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 200px;
+  padding: 10px;
+  height: 100%; }
+  .left-column .nav {
+    margin-top: 30px;
+    font-weight: bold; }
+  @media screen and (max-width: 600px) {
+    .left-column {
+      display: none; } }
+
+.right-column, .title-bar, .chat-box {
+  width: 530px; }
+  @media screen and (max-width: 767px) {
+    .right-column, .title-bar, .chat-box {
+      width: 353.33333px; } }
+  @media screen and (min-width: 980px) {
+    .right-column, .title-bar, .chat-box {
+      width: 742px; } }
+
+.right-column {
+  position: absolute;
+  top: 0px;
+  left: 225px;
+  height: 100%; }
+  @media screen and (max-width: 600px) {
+    .right-column {
+      left: 5px; } }
+
+.title-bar {
+  position: fixed;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.85);
+  z-index: 10; }
+  .title-bar h1 {
+    line-height: 80px; }
+
+.messages-box {
+  position: relative;
+  top: 100px;
+  padding-bottom: 80px; }
+  .messages-box .message {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 5px 0px; }
+    .messages-box .message .sender {
+      overflow: hidden; }
+      .messages-box .message .sender small {
+        opacity: 0.75; }
+    .messages-box .message .message-text {
+      margin-left: 0px; }
+
+.chat-box {
+  margin: 0px;
+  position: fixed;
+  bottom: 0px;
+  background-color: white;
+  padding-top: 5px; }
+  .chat-box textarea {
+    max-height: 50px;
+    min-height: 50px;
+    max-width: 380px;
+    min-width: 380px;
+    padding: 5px; }
+    @media screen and (max-width: 767px) {
+      .chat-box textarea {
+        max-width: 253.33333px;
+        min-width: 253.33333px; } }
+    @media screen and (min-width: 980px) {
+      .chat-box textarea {
+        max-width: 592px;
+        min-width: 592px; } }
+  .chat-box input[type='submit'] {
+    width: 130px;
+    float: right;
+    height: 62px; }
+    @media screen and (max-width: 767px) {
+      .chat-box input[type='submit'] {
+        width: 80px; } }
+
+.color-0 {
+  color: maroon; }
+
+.color-1 {
+  color: #4a8000; }
+
+.color-2 {
+  color: #00806a; }
+
+.color-3 {
+  color: #003b80; }
+
+.color-4 {
+  color: #805900; }
+
+.color-5 {
+  color: #008011; }

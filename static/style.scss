@@ -1,0 +1,137 @@
+$right-column-width: 530px;
+$gray: rgb(230,230,230);
+$color-value: 128;
+$phone: 600px;
+$narrow: 767px;
+$wide: 980px;
+html {
+	margin: 0px;
+	overflow-y: scroll;
+	height: 100%;
+	min-width: 840px;
+}
+body {
+	margin: 0px;
+	height: 100%;
+}
+a img {
+	outline: none;
+	border: none;
+}
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
+.container {
+}
+.left-column {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 200px;
+	padding: 10px;
+	height: 100%;
+	.nav {
+		margin-top: 30px;
+		font-weight: bold;
+	}
+	@media screen and (max-width: $phone) {
+		display: none;
+	}
+}
+.right-column, .title-bar, .chat-box {
+	width: $right-column-width;
+	@media screen and (max-width: $narrow) {
+		width: 2*$right-column-width/3;
+	}
+	@media screen and (min-width: $wide) {
+		width: 1.4*$right-column-width;
+	}
+}
+.right-column {
+	position: absolute;
+	top: 0px;
+	left: 225px;
+	height: 100%;
+	@media screen and (max-width: $phone) {
+		left: 5px;
+		//width: 95%;
+	}
+}
+.title-bar {
+	position: fixed;
+	height: 80px;
+	background-color: rgba(white, 0.85);
+	z-index: 10;
+	h1 {
+		line-height: 80px;
+	}
+}
+.messages-box {
+	position: relative;
+	top: 100px;
+	padding-bottom: 80px;
+	.message {
+		border-bottom: 1px solid $gray;
+		padding: 5px 0px;
+		.sender {
+			overflow: hidden;
+			small {
+				opacity: 0.75;
+			}
+		}
+		.message-text {
+			margin-left: 0px;
+		}
+	}
+}
+.chat-box {
+	margin: 0px;
+	position: fixed;
+	bottom: 0px;
+	background-color: white;
+	padding-top: 5px;
+	textarea {
+		max-height: 50px;
+		min-height: 50px;
+		max-width: $right-column-width - 150px;
+		min-width: $right-column-width - 150px;
+		padding: 5px;
+		@media screen and (max-width: $narrow) {
+			max-width: (2*$right-column-width/3) - 100px;
+			min-width: (2*$right-column-width/3) - 100px;
+		}
+		@media screen and (min-width: $wide) {
+			max-width: (1.4*$right-column-width) - 150px;
+			min-width: (1.4*$right-column-width) - 150px;
+		}
+	}
+	input[type='submit'] {
+		width: 130px;
+		float: right;
+		height: 62px;
+		@media screen and (max-width: $narrow) {
+			width: 80px;
+		}
+	}
+}
+.color-0 {
+	color: hsl(0, 100%, 25%);
+}
+.color-1 {
+	color: hsl(85, 100%, 25%);
+}
+.color-2 {
+	color: hsl(170, 100%, 25%);
+}
+.color-3 {
+	color: hsl(212, 100%, 25%);
+}
+.color-4 {
+	color: hsl(42, 100%, 25%);
+}
+.color-5 {
+	color: hsl(128, 100%, 25%);
+}
