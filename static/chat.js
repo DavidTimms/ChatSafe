@@ -85,4 +85,12 @@ function ChatCtrl($scope) {
 	    $scope.message_text = '';
         jQuery('html, body').animate({scrollTop:$(document).height()}, 'slow');
 	};
+	// Send message on enter key
+	$("#message_textarea").keypress(function(event) {
+		if (event.which === 13) {
+			event.preventDefault();
+			$scope.sendMessage();
+	    	$scope.$apply();
+		}
+	});
 }

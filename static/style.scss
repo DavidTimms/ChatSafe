@@ -4,7 +4,7 @@ $color-value: 128;
 $phone: 365px;
 $hide-sidebar: 600px;
 $narrow: 767px;
-$wide: 980px;
+$wide: 1000px;
 html {
 	margin: 0px;
 	overflow-y: scroll;
@@ -54,6 +54,9 @@ a img {
 		float: right;
 		margin-bottom: 10px;
 	}
+	&.out {
+		left: 0px;
+	}
 }
 .right-column, .title-bar, .chat-box {
 	width: $right-column-width;
@@ -78,15 +81,17 @@ a img {
 }
 .title-bar {
 	position: fixed;
-	height: 80px;
+	height: 60px;
 	background-color: rgba(white, 0.85);
 	z-index: 10;
-	line-height: 80px;
+	line-height: 60px;
 	h1 {
 		display: inline;
+		font-size: 25px;
+		padding-left: 5px;
 	}
 	button {
-		margin: 0px 5px 20px 5px;
+		margin: 0px 5px 10px 5px;
 	}
 }
 .messages-box {
