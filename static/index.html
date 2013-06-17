@@ -3,6 +3,7 @@
 	<head>
 		<title>DaveChat</title>
 		<meta name="viewport" content="width=305, user-scalable=no" />
+		<link href="bootstrap-combined.min.css" rel="stylesheet">
 		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
@@ -12,14 +13,17 @@
 	<body>
 		<div class="container" ng-controller="ChatCtrl">
 		    <div class="left-column">
+		    	<button class="btn compact-only" ng-click="slideSidebar('-220px')"><i class="icon-chevron-left"></i></button>
 		    	<ul class="nav nav-tabs nav-stacked">
 					<li ng-repeat="chatter in chatters">
 			        	<a class="color-{{chatter.id}}">{{chatter.name}}</a>
 			    	</li>
 			    </ul>
+			    <button class="btn"><i class="icon-lock"></i> Lock Chat</button>
 		    </div>
 		    <div class="right-column">
 				<div class="title-bar">
+					<button class="btn compact-only" ng-click="slideSidebar('0px')"><i class="icon-chevron-right"></i></button>
 					<h1>{{conversation_name}}</h1>
 				</div>
 				<div class="messages-box" id="messages-box">

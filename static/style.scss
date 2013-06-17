@@ -24,6 +24,11 @@ a img {
 .right {
 	float: right;
 }
+.compact-only {
+	@media screen and (min-width: $hide-sidebar) {
+		display: none;
+	}
+}
 .left-column {
 	position: fixed;
 	top: 0px;
@@ -31,12 +36,23 @@ a img {
 	width: 200px;
 	padding: 10px;
 	height: 100%;
+	z-index: 15;
+	background-color: white;
+	text-align: center;
 	.nav {
 		margin-top: 30px;
 		font-weight: bold;
+		text-align: left;
+		clear: both;
 	}
 	@media screen and (max-width: $hide-sidebar) {
-		display: none;
+		left: -220px;
+		border-right: 1px solid $gray;
+		background-color: lighten($gray, 8%);
+	}
+	.compact-only {
+		float: right;
+		margin-bottom: 10px;
 	}
 }
 .right-column, .title-bar, .chat-box {
@@ -65,8 +81,12 @@ a img {
 	height: 80px;
 	background-color: rgba(white, 0.85);
 	z-index: 10;
+	line-height: 80px;
 	h1 {
-		line-height: 80px;
+		display: inline;
+	}
+	button {
+		margin: 0px 5px 20px 5px;
 	}
 }
 .messages-box {

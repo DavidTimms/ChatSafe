@@ -58,6 +58,13 @@ function ChatCtrl($scope) {
 		return time;
 	}
 
+	$scope.slideSidebar = function (new_left) {
+		jQuery('.left-column').animate({
+			left: new_left
+		}, 300);
+		console.log("slide");
+	};
+
 	$scope.messages = [
 	    new Message('hello world', 'Dave', mins_ago(12)),
 	    new Message('foo!', 'Rob', mins_ago(10)),
