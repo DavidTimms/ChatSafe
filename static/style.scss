@@ -1,7 +1,8 @@
 $right-column-width: 530px;
 $gray: rgb(230,230,230);
 $color-value: 128;
-$phone: 600px;
+$phone: 365px;
+$hide-sidebar: 600px;
 $narrow: 767px;
 $wide: 980px;
 html {
@@ -36,17 +37,20 @@ a img {
 		margin-top: 30px;
 		font-weight: bold;
 	}
-	@media screen and (max-width: $phone) {
+	@media screen and (max-width: $hide-sidebar) {
 		display: none;
 	}
 }
 .right-column, .title-bar, .chat-box {
 	width: $right-column-width;
+	@media screen and (min-width: $wide) {
+		width: 1.4*$right-column-width;
+	}
 	@media screen and (max-width: $narrow) {
 		width: 2*$right-column-width/3;
 	}
-	@media screen and (min-width: $wide) {
-		width: 1.4*$right-column-width;
+	@media screen and (max-width: $phone) {
+		width: $right-column-width/2;
 	}
 }
 .right-column {
@@ -54,9 +58,8 @@ a img {
 	top: 0px;
 	left: 225px;
 	height: 100%;
-	@media screen and (max-width: $phone) {
+	@media screen and (max-width: $hide-sidebar) {
 		left: 5px;
-		//width: 95%;
 	}
 }
 .title-bar {
@@ -79,6 +82,14 @@ a img {
 			overflow: hidden;
 			small {
 				opacity: 0.75;
+				&:before {
+					content: " ";
+					display: block;
+				}
+				@media screen and (max-width: $narrow) {
+					float: right;
+					display: inline;
+				}
 			}
 		}
 		.message-text {
@@ -98,13 +109,17 @@ a img {
 		max-width: $right-column-width - 150px;
 		min-width: $right-column-width - 150px;
 		padding: 5px;
+		@media screen and (min-width: $wide) {
+			max-width: (1.4*$right-column-width) - 150px;
+			min-width: (1.4*$right-column-width) - 150px;
+		}
 		@media screen and (max-width: $narrow) {
 			max-width: (2*$right-column-width/3) - 100px;
 			min-width: (2*$right-column-width/3) - 100px;
 		}
-		@media screen and (min-width: $wide) {
-			max-width: (1.4*$right-column-width) - 150px;
-			min-width: (1.4*$right-column-width) - 150px;
+		@media screen and (max-width: $phone) {
+			max-width: ($right-column-width/2) - 80px;
+			min-width: ($right-column-width/2) - 80px;
 		}
 	}
 	input[type='submit'] {
@@ -113,6 +128,9 @@ a img {
 		height: 62px;
 		@media screen and (max-width: $narrow) {
 			width: 80px;
+		}
+		@media screen and (max-width: $phone) {
+			width: 60px;
 		}
 	}
 }

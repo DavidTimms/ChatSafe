@@ -1,3 +1,2 @@
 $ cat .gitignore
-.sass-cache
-*.scss
+static/.sass-cache

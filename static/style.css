@@ -33,12 +33,15 @@ a img {
 
 .right-column, .title-bar, .chat-box {
   width: 530px; }
-  @media screen and (max-width: 767px) {
-    .right-column, .title-bar, .chat-box {
-      width: 353.33333px; } }
   @media screen and (min-width: 980px) {
     .right-column, .title-bar, .chat-box {
       width: 742px; } }
+  @media screen and (max-width: 767px) {
+    .right-column, .title-bar, .chat-box {
+      width: 353.33333px; } }
+  @media screen and (max-width: 365px) {
+    .right-column, .title-bar, .chat-box {
+      width: 265px; } }
 
 .right-column {
   position: absolute;
@@ -68,6 +71,13 @@ a img {
       overflow: hidden; }
       .messages-box .message .sender small {
         opacity: 0.75; }
+        .messages-box .message .sender small:before {
+          content: " ";
+          display: block; }
+        @media screen and (max-width: 767px) {
+          .messages-box .message .sender small {
+            float: right;
+            display: inline; } }
     .messages-box .message .message-text {
       margin-left: 0px; }
 
@@ -83,14 +93,18 @@ a img {
     max-width: 380px;
     min-width: 380px;
     padding: 5px; }
-    @media screen and (max-width: 767px) {
-      .chat-box textarea {
-        max-width: 253.33333px;
-        min-width: 253.33333px; } }
     @media screen and (min-width: 980px) {
       .chat-box textarea {
         max-width: 592px;
         min-width: 592px; } }
+    @media screen and (max-width: 767px) {
+      .chat-box textarea {
+        max-width: 253.33333px;
+        min-width: 253.33333px; } }
+    @media screen and (max-width: 365px) {
+      .chat-box textarea {
+        max-width: 185px;
+        min-width: 185px; } }
   .chat-box input[type='submit'] {
     width: 130px;
     float: right;
@@ -98,6 +112,9 @@ a img {
     @media screen and (max-width: 767px) {
       .chat-box input[type='submit'] {
         width: 80px; } }
+    @media screen and (max-width: 365px) {
+      .chat-box input[type='submit'] {
+        width: 60px; } }
 
 .color-0 {
   color: maroon; }
