@@ -47,7 +47,7 @@ function ChatCtrl($scope) {
 			hours = '00';
 		}
 		else if (hours < 10) {
-			hours = '0' + mins;
+			hours = '0' + hours;
 		}
 		return hours + ":" + mins;
 	};

@@ -24,8 +24,6 @@ a img {
 .right {
 	float: right;
 }
-.container {
-}
 .left-column {
 	position: fixed;
 	top: 0px;
@@ -50,7 +48,7 @@ a img {
 		width: 2*$right-column-width/3;
 	}
 	@media screen and (max-width: $phone) {
-		width: $right-column-width/2;
+		width: $right-column-width*0.55;
 	}
 }
 .right-column {
@@ -118,8 +116,8 @@ a img {
 			min-width: (2*$right-column-width/3) - 100px;
 		}
 		@media screen and (max-width: $phone) {
-			max-width: ($right-column-width/2) - 80px;
-			min-width: ($right-column-width/2) - 80px;
+			max-width: ($right-column-width*0.55) - 80px;
+			min-width: ($right-column-width*0.55) - 80px;
 		}
 	}
 	input[type='submit'] {

@@ -41,7 +41,7 @@ a img {
       width: 353.33333px; } }
   @media screen and (max-width: 365px) {
     .right-column, .title-bar, .chat-box {
-      width: 265px; } }
+      width: 291.5px; } }
 
 .right-column {
   position: absolute;
@@ -103,8 +103,8 @@ a img {
         min-width: 253.33333px; } }
     @media screen and (max-width: 365px) {
       .chat-box textarea {
-        max-width: 185px;
-        min-width: 185px; } }
+        max-width: 211.5px;
+        min-width: 211.5px; } }
   .chat-box input[type='submit'] {
     width: 130px;
     float: right;
