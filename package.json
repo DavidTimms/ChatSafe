@@ -1,23 +1,20 @@
 {
-  "name": "OpenShift-Sample-App",
-  "version": "1.0.0",
-  "description": "OpenShift Sample Application",
+  "name": "DaveChat",
+  "version": "0.1",
+  "description": "DaveChat Instant Messaging App",
   "keywords": [
     "OpenShift",
     "Node.js",
     "application",
-    "openshift"
+    "openshift",
+    "chat"
   ],
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url":  "http://www.openshift.com/"
+    "name": "David Timms",
+    "email": "davidtimms@btinternet.com",
+    "url":  "http://www.davidtimms.co.uk"
   },
-  "homepage": "http://www.openshift.com/",
-  "repository": {
-    "type": "git",
-    "url": "https://gitub.com/openshift/origin-server"
-  },
+  "homepage": "http://www.davidtimms.co.uk",
 
   "engines": {
     "node": ">= 0.6.0",

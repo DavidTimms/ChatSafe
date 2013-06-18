@@ -8,15 +8,10 @@ var makeConversation = require('./static/chat.js');
 /**
  *  Define the sample application.
  */
-var SampleApp = function() {
+var ChatApp = function() {
 
     //  Scope.
     var self = this;
-
-
-    /*  ================================================================  */
-    /*  Helper functions.                                                 */
-    /*  ================================================================  */
 
     /**
      *  Set up server IP address and port # using env variables/defaults.
@@ -270,7 +265,7 @@ var SampleApp = function() {
 /**
  *  main():  Main code.
  */
-var zapp = new SampleApp();
+var zapp = new ChatApp();
 zapp.initialize();
 zapp.start();
 
