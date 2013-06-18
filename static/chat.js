@@ -114,7 +114,7 @@ function Conversation($scope) {
 	};
 
 	if (!$scope.server) {
-		var socket = io.connect('http://' + window.location.hostname);
+		var socket = io.connect('http://' + window.location.hostname + ':8000');
 		socket.callback = {};
 		socket.emitWithCallback = function (name, data, callback) {
 			socket.emit(name, data);
