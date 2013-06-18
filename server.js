@@ -202,13 +202,17 @@ var ChatApp = function() {
                 // test whether name is in use
                 if (conversation.chatters.get(data.name)) {
                     console.log('Username ' + data.name + ' already in use');
-                    socket.emit('callback', 'join chat', {accepted: false});
+                    setTimeout(function () {
+                        socket.emit('callback', 'join chat', {accepted: false});
+                    }, 500);
                 }
                 else {
                     console.log(data.name + ' joined the conversation');
                     var new_chatter = new conversation.Chatter(data);
                     socket.chatter = new_chatter;
-                    socket.emit('callback', 'join chat', {accepted: true});
+                    setTimeout(function () {
+                        socket.emit('callback', 'join chat', {accepted: true});
+                    }, 500);
                     self.io.sockets.in(conversation.conversation_name).emit('new chatter', data);
                 }
             });
@@ -217,7 +221,7 @@ var ChatApp = function() {
                     var name = socket.chatter.name;
                     var message = new conversation.Message({text: name + ' has left the conversation'});
                     self.io.sockets.in(conversation.conversation_name).emit('new message', message);
-                    socket.chatter.destroy();
+                    conversation.chatters.destroy(socket.chatter.name);
                     self.io.sockets.in(conversation.conversation_name).emit('chatter disconnected', {name: name});
                 }
             });

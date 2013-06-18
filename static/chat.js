@@ -18,7 +18,17 @@ function Conversation($scope) {
 	$scope.Chatter = function (data) {
 		var self = this;
 		self.name = data.name;
-		self.id = data.id || $scope.chatters.length;
+		self.id = data.id;
+		if (!self.id) {
+			console.log('auto id');
+			var max_id = -1;
+			for (var i = 0; i<$scope.chatters.length; i++) {
+				if ($scope.chatters[i].id > max_id) {
+					max_id = $scope.chatters[i].id;
+				}
+			}
+			self.id = max_id + 1;
+		}
 		$scope.chatters.push(self);
 		return self;
 	};
@@ -29,9 +39,13 @@ function Conversation($scope) {
 		}
 		this.name = $scope.new_username;
 	};
-	$scope.Chatter.prototype.destroy = function () {
-		$scope.chatters.pop(this);
-		//this = undefined;
+	$scope.chatters.destroy = function (name) {
+		for (var i = 0; i<this.length; i++) {
+			if (this[i].name === name) {
+				this.splice(i, 1);
+			}
+		}
+		return undefined;
 	};
 
 	$scope.messages = [];
@@ -148,7 +162,16 @@ function Conversation($scope) {
 				}
 		    }
 		};
+		// Set username on enter key
+		$('#username_modal .username').keypress(function(event) {
+			if (event.which === 13) {
+				event.preventDefault();
+				$scope.setUsername();
+		    	$scope.$apply();
+			}
+		});
 		$scope.joinChat = function (name) {
+			$scope.join_loading = true;
 			socket.emitWithCallback('join chat', {name: name}, function (response) {
 				if (response.accepted) {
 					$scope.my_username = $scope.new_username;
@@ -159,6 +182,7 @@ function Conversation($scope) {
 				else {
 					$scope.username_error = 'Sorry, that username is already in use';
 				}
+				$scope.join_loading = false;
 				$scope.$apply();
 			});
 		};
@@ -167,20 +191,23 @@ function Conversation($scope) {
 			$scope.$apply();
 		});
 		socket.on('chatter disconnected', function (data) {
-			$scope.chatters.get(data.name).destroy();
+			$scope.chatters.destroy(data.name);
 			$scope.$apply();
 		});
 
+		$('#username_modal').on('shown', function () {
+			$("#username_modal .username").first().focus();
+		})
 		$scope.scrollDown = function () {
 			setTimeout(function () {
-				jQuery('html, body').stop().animate({scrollTop:$(document).height()}, 'slow');
+				$('html, body').stop().animate({scrollTop:$(document).height()}, 'slow');
 			}, 50);
 		};
 	}
 
 	if (!$scope.server) {
 		var slide_speed = 300;
-		var sidebar = jQuery('.left-column');
+		var sidebar = $('.left-column');
 		$scope.showSidebar = function () {
 			sidebar.animate({
 				left: '0px'

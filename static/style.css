@@ -11,11 +11,13 @@ a img {
   outline: none;
   border: none; }
 
-.left {
-  float: left; }
-
-.right {
-  float: right; }
+.icon-loading {
+  background-image: url("loading.gif");
+  background-repeat: no-repeat;
+  background-position: center 0px;
+  display: inline-block;
+  width: 22px;
+  height: 16px; }
 
 @media screen and (min-width: 600px) {
   .compact-only {
@@ -44,7 +46,7 @@ a img {
       border-right: 1px solid #e6e6e6;
       background-color: #fafafa; } }
   .left-column .btn {
-    width: 180px;
+    width: 170px;
     margin-bottom: 10px; }
   .left-column .compact-only {
     width: auto;
@@ -104,6 +106,8 @@ a img {
             display: inline; } }
     .messages-box .message .message-text {
       margin-left: 0px; }
+  .messages-box .icon-loading {
+    width: 99%; }
 
 .chat-box {
   margin: 0px;

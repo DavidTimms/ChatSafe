@@ -18,7 +18,7 @@
 		    	<button class="btn compact-only" ng-click="hideSidebar()"><i class="icon-chevron-left"></i></button>
 		    	<ul class="nav nav-tabs nav-stacked">
 					<li ng-repeat="chatter in chatters">
-			        	<a class="color-{{chatter.id}}">{{chatter.name}}</a>
+			        	<a class="color-{{chatter.id % 6}}">{{chatter.name}}</a>
 			    	</li>
 			    </ul>
 			    <button class="btn" ng-show="my_username" ng-click="lockChat()"><i class="icon-lock"></i> Lock Chat</button><br />
@@ -31,7 +31,8 @@
 					<h1>{{conversation_name}}</h1>
 				</div>
 				<div class="messages-box" id="messages-box">
-					<div class="message row-fluid color-{{chatters.get(message.sender).id}}" ng-repeat="message in messages | orderBy: 'time'">
+					<i class="icon-loading" ng-hide="messages.length > 0"></i>
+					<div class="message row-fluid color-{{chatters.get(message.sender).id % 6}}" ng-repeat="message in messages | orderBy: 'time'">
 			        	<strong class="sender span3" ng-hide="message.sender == undefined">{{message.sender}}<small>{{message.timeString()}}</small></strong>
 			        	<div class="message-text span9">{{message.text}}</div>
 			    	</div>
@@ -49,10 +50,11 @@
 				</div>
 				<div class="modal-body">
 					<div class="alert alert-error" ng-show="username_error">{{username_error}}</div>
-			    	<input class="username" type="text" ng-model="new_username" placeholder="Type a username here" />
+			    	<input class="username" type="text" placeholder="Type a username here" ng-model="new_username" ng-disabled="join_loading" />
 				</div>
 				<div class="modal-footer">
-					<a href="#" class="btn btn-primary" ng-click="setUsername()">Save</a>
+					<i class="icon-loading" ng-show="join_loading"></i> 
+					<a href="#" class="btn btn-primary" ng-disabled="join_loading" ng-click="setUsername()">Save</a>
 				</div>
 			</div>
 		</div>
