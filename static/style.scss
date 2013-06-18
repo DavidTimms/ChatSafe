@@ -39,6 +39,9 @@ a img {
 	z-index: 15;
 	background-color: white;
 	text-align: center;
+	&.sidebar_out {
+		left: 0px;
+	}
 	.nav {
 		margin-top: 30px;
 		font-weight: bold;
@@ -50,12 +53,11 @@ a img {
 		border-right: 1px solid $gray;
 		background-color: lighten($gray, 8%);
 	}
-	.compact-only {
-		float: right;
+	.btn {
 		margin-bottom: 10px;
 	}
-	&.out {
-		left: 0px;
+	.compact-only {
+		float: right;
 	}
 }
 .right-column, .title-bar, .chat-box {
@@ -126,6 +128,7 @@ a img {
 	bottom: 0px;
 	background-color: white;
 	padding-top: 5px;
+	text-align: center;
 	textarea {
 		max-height: 50px;
 		min-height: 50px;
@@ -156,6 +159,9 @@ a img {
 			width: 60px;
 		}
 	}
+	.btn-large {
+		margin-bottom: 10px;
+	}
 }
 .color-0 {
 	color: hsl(0, 100%, 25%);
@@ -174,4 +180,13 @@ a img {
 }
 .color-5 {
 	color: hsl(128, 100%, 25%);
+}
+.modal {
+	@media screen and (min-width: 768px) {
+		width: 400px;
+		margin-left: -200px;
+	}
+	.username {
+		width: 95%;
+	}
 }

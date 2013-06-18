@@ -2,6 +2,7 @@
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
+var makeConversation = require('./static/chat.js');
 
 
 /**
@@ -184,13 +185,39 @@ var SampleApp = function() {
                         gif: "image/gif"};
 
 
-    self.removeFileExtension = function(file_name) {
+    self.removeFileExtension = function (file_name) {
         var slice = file_name.lastIndexOf('.');
         if(slice > 0) {
             return file_name.substring(0,slice);
         }
         return file_name;
-    }
+    };
+
+    self.startSocket = function () {
+        var conversation = {server: true};
+        makeConversation(conversation);
+        self.io.sockets.on('connection', function (socket) {
+            socket.join(conversation.conversation_name);
+            socket.emit('initialize history', {chatters: conversation.chatters, messages: conversation.messages});
+            socket.on('new message', function (data) {
+                var message = new conversation.Message(data);
+                self.io.sockets.in(conversation.conversation_name).emit('new message', data);
+            });
+            socket.on('join chat', function (data) {
+                // test whether name is in use
+                if (conversation.chatters.get(data.name)) {
+                    console.log('Username ' + data.name + ' already in use');
+                    socket.emit('callback', 'join chat', {accepted: false});
+                }
+                else {
+                    console.log(data.name + ' joined the conversation');
+                    new conversation.Chatter(data);
+                    socket.emit('callback', 'join chat', {accepted: true});
+                    self.io.sockets.in(conversation.conversation_name).emit('new chatter', data);
+                }
+            });
+        });
+    };
 
     /**
      *  Initialize the server (express) and create the routes and register
@@ -198,7 +225,10 @@ var SampleApp = function() {
      */
     self.initializeServer = function() {
         self.createRoutes();
-        self.app = express.createServer();
+        self.app = express();
+        self.server = require('http').createServer(self.app);
+        self.io = require('socket.io').listen(self.server);
+        self.startSocket();
 
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
@@ -227,7 +257,7 @@ var SampleApp = function() {
      */
     self.start = function() {
         //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
+        self.server.listen(self.port, self.ipaddress, function() {
             console.log('%s: Node server started on %s:%d ...',
                         Date(Date.now() ), self.ipaddress, self.port);
         });

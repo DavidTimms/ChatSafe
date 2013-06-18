@@ -31,6 +31,8 @@ a img {
   z-index: 15;
   background-color: white;
   text-align: center; }
+  .left-column.sidebar_out {
+    left: 0px; }
   .left-column .nav {
     margin-top: 30px;
     font-weight: bold;
@@ -41,11 +43,10 @@ a img {
       left: -220px;
       border-right: 1px solid #e6e6e6;
       background-color: #fafafa; } }
-  .left-column .compact-only {
-    float: right;
+  .left-column .btn {
     margin-bottom: 10px; }
-  .left-column.out {
-    left: 0px; }
+  .left-column .compact-only {
+    float: right; }
 
 .right-column, .title-bar, .chat-box {
   width: 530px; }
@@ -107,7 +108,8 @@ a img {
   position: fixed;
   bottom: 0px;
   background-color: white;
-  padding-top: 5px; }
+  padding-top: 5px;
+  text-align: center; }
   .chat-box textarea {
     max-height: 50px;
     min-height: 50px;
@@ -136,6 +138,8 @@ a img {
     @media screen and (max-width: 365px) {
       .chat-box input[type='submit'] {
         width: 60px; } }
+  .chat-box .btn-large {
+    margin-bottom: 10px; }
 
 .color-0 {
   color: maroon; }
@@ -154,3 +158,10 @@ a img {
 
 .color-5 {
   color: #008011; }
+
+@media screen and (min-width: 768px) {
+  .modal {
+    width: 400px;
+    margin-left: -200px; } }
+.modal .username {
+  width: 95%; }
