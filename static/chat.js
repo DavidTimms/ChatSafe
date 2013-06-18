@@ -20,7 +20,6 @@ function Conversation($scope) {
 		self.name = data.name;
 		self.id = data.id;
 		if (!self.id) {
-			console.log('auto id');
 			var max_id = -1;
 			for (var i = 0; i<$scope.chatters.length; i++) {
 				if ($scope.chatters[i].id > max_id) {
@@ -31,6 +30,12 @@ function Conversation($scope) {
 		}
 		$scope.chatters.push(self);
 		return self;
+	};
+	$scope.Chatter.prototype.isMe = function () {
+		if (this.name === $scope.my_username) {
+			return 'is_me';
+		}
+		return '';
 	};
 	$scope.Chatter.prototype.updateName = function (new_name) {
 		socket.emit('username changed', {old_name: this.name, new_name: new_name});
@@ -82,24 +87,30 @@ function Conversation($scope) {
 	$scope.newMessage = function (text, sender, time) {
 		new $scope.Message({text: text, sender: sender, time: time});
 	};
-	$scope.systemMessage = function (text) {
+	$scope.systemMessage = function (text, io) {
 		if ($scope.server) {
 			new $scope.Message({text: text});
-			self.io.sockets.in($scope.conversation_name).emit('new message', {text: text});
+			io.sockets.in($scope.conversation_name).emit('new message', {text: text});
 		}
 		else {
 			socket.emit('new message', {text: text});
 		}
 	};
 	$scope.clearMessages = function () {
-		$scope.messages = [];
-		if ($scope.server) {
-			self.io.sockets.in($scope.conversation_name).emit('clear messages');
-		}
-		else {
-			socket.emit('clear messages');
-		}
-		$scope.systemMessage('All messages cleared');
+		$scope.confirm(	'Clear all messages?', 
+						'Are you sure you want to delete all messages from the chat history?', 
+						function (accepted) {
+							if (accepted) {
+								$scope.messages = [];
+								if ($scope.server) {
+									self.io.sockets.in($scope.conversation_name).emit('clear messages');
+								}
+								else {
+									socket.emit('clear messages');
+								}
+								$scope.systemMessage('All messages cleared');
+							};
+						});
 	};
 
 	if (!$scope.server) {
@@ -180,7 +191,7 @@ function Conversation($scope) {
 					$scope.systemMessage(name + ' has joined the conversation');
 				}
 				else {
-					$scope.username_error = 'Sorry, that username is already in use';
+					$scope.username_error = response.error;
 				}
 				$scope.join_loading = false;
 				$scope.$apply();
@@ -194,6 +205,32 @@ function Conversation($scope) {
 			$scope.chatters.destroy(data.name);
 			$scope.$apply();
 		});
+		$scope.leaveChat = function () {
+			//var message = new conversation.Message({text: $scope.my_username + ' has left the conversation'});
+			//socket.emit('new message', message);
+			$scope.confirm(	'Leave chat?', 
+							'Are you sure you wish to leave the conversation?', 
+							function (accepted) {
+								if (accepted) {
+									$scope.chatters.destroy($scope.my_username);
+									socket.emit('leave chat');
+									$scope.my_username = undefined;
+								}
+							});
+		};
+
+		// Confirm Modal
+		// confirm modal default
+		$scope.confirm_modal = {title: 'Are you sure?', message: 'Are you sure?', respond: function () {}};
+		$scope.confirm = function (title, message, callback) {
+			$scope.confirm_modal.title = title;
+			$scope.confirm_modal.message = message;
+			$scope.confirm_modal.respond = function (response) {
+				$('#confirm_modal').modal('hide');
+				callback(response);
+			}
+			$('#confirm_modal').modal('show');
+		};
 
 		$('#username_modal').on('shown', function () {
 			$("#username_modal .username").first().focus();
@@ -203,9 +240,26 @@ function Conversation($scope) {
 				$('html, body').stop().animate({scrollTop:$(document).height()}, 'slow');
 			}, 50);
 		};
-	}
+		$scope.toggleLocked = function () {
+			if ($scope.locked) {
+				socket.emit('unlock chat');
+			}
+			else {
+				socket.emit('lock chat');
+			}
+		};
+		socket.on('chat locked', function () {
+			$scope.locked = true;
+			console.log('chat locked');
+			$scope.$apply();
+		});
+		socket.on('chat unlocked', function () {
+			$scope.locked = false;
+			console.log('chat unlocked');
+			$scope.$apply();
+		});
 
-	if (!$scope.server) {
+		// Sidebar sliding
 		var slide_speed = 300;
 		var sidebar = $('.left-column');
 		$scope.showSidebar = function () {
@@ -223,10 +277,6 @@ function Conversation($scope) {
 			});
 		};
 	}
-
-	$scope.lockChat = function () {
-		console.log('chat locked (feature not yet implemented)');
-	};
 
 	if ($scope.server) {
 		test();

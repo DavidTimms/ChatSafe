@@ -23,7 +23,7 @@ a img {
 	background-repeat: no-repeat;
 	background-position: center 0px;
 	display: inline-block;
-	width: 22px;
+	width: 24px;
 	height: 16px;
 }
 .compact-only {
@@ -41,6 +41,7 @@ a img {
 	z-index: 15;
 	background-color: white;
 	text-align: center;
+	overflow: auto;
 	&.sidebar_out {
 		left: 0px;
 	}
@@ -49,6 +50,9 @@ a img {
 		font-weight: bold;
 		text-align: left;
 		clear: both;
+		.is_me {
+			background-color: rgb(240, 240, 240);
+		}
 	}
 	@media screen and (max-width: $hide-sidebar) {
 		left: -220px;
@@ -58,10 +62,17 @@ a img {
 	.btn {
 		width: 170px;
 		margin-bottom: 10px;
+		i {
+			margin-right: 3px;
+			margin-left: -10px;
+		}
 	}
 	.compact-only {
 		width: auto;
 		float: right;
+		i {
+			margin: auto;
+		}
 	}
 }
 .right-column, .title-bar, .chat-box {
@@ -104,9 +115,10 @@ a img {
 	position: relative;
 	top: 100px;
 	padding-bottom: 80px;
+	color: rgb(100,100,100);
 	.message {
 		border-bottom: 1px solid $gray;
-		padding: 5px 0px;
+		padding: 3px 0px;
 		.sender {
 			overflow: hidden;
 			small {
@@ -123,6 +135,13 @@ a img {
 		}
 		.message-text {
 			margin-left: 0px;
+		}
+	}
+	.is_me {
+		.message-text {
+			@media screen and (max-width: $narrow) {
+				text-align: right;
+			}
 		}
 	}
 	.icon-loading {
@@ -171,22 +190,22 @@ a img {
 	}
 }
 .color-0 {
-	color: hsl(0, 100%, 25%);
+	color: hsl(0, 100%, 25%) !important;
 }
 .color-1 {
-	color: hsl(85, 100%, 25%);
+	color: hsl(85, 100%, 25%) !important;
 }
 .color-2 {
-	color: hsl(170, 100%, 25%);
+	color: hsl(170, 100%, 25%) !important;
 }
 .color-3 {
-	color: hsl(212, 100%, 25%);
+	color: hsl(212, 100%, 25%) !important;
 }
 .color-4 {
-	color: hsl(42, 100%, 25%);
+	color: hsl(42, 100%, 25%) !important;
 }
 .color-5 {
-	color: hsl(128, 100%, 25%);
+	color: hsl(128, 100%, 25%) !important;
 }
 .modal {
 	@media screen and (min-width: 768px) {
@@ -195,5 +214,8 @@ a img {
 	}
 	.username {
 		width: 95%;
+	}
+	.modal-footer {
+		//text-align: center;
 	}
 }

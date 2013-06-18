@@ -16,7 +16,7 @@ a img {
   background-repeat: no-repeat;
   background-position: center 0px;
   display: inline-block;
-  width: 22px;
+  width: 24px;
   height: 16px; }
 
 @media screen and (min-width: 600px) {
@@ -32,7 +32,8 @@ a img {
   height: 100%;
   z-index: 15;
   background-color: white;
-  text-align: center; }
+  text-align: center;
+  overflow: auto; }
   .left-column.sidebar_out {
     left: 0px; }
   .left-column .nav {
@@ -40,6 +41,8 @@ a img {
     font-weight: bold;
     text-align: left;
     clear: both; }
+    .left-column .nav .is_me {
+      background-color: #f0f0f0; }
   @media screen and (max-width: 600px) {
     .left-column {
       left: -220px;
@@ -48,9 +51,14 @@ a img {
   .left-column .btn {
     width: 170px;
     margin-bottom: 10px; }
+    .left-column .btn i {
+      margin-right: 3px;
+      margin-left: -10px; }
   .left-column .compact-only {
     width: auto;
     float: right; }
+    .left-column .compact-only i {
+      margin: auto; }
 
 .right-column, .title-bar, .chat-box {
   width: 530px; }
@@ -89,10 +97,11 @@ a img {
 .messages-box {
   position: relative;
   top: 100px;
-  padding-bottom: 80px; }
+  padding-bottom: 80px;
+  color: #646464; }
   .messages-box .message {
     border-bottom: 1px solid #e6e6e6;
-    padding: 5px 0px; }
+    padding: 3px 0px; }
     .messages-box .message .sender {
       overflow: hidden; }
       .messages-box .message .sender small {
@@ -106,6 +115,9 @@ a img {
             display: inline; } }
     .messages-box .message .message-text {
       margin-left: 0px; }
+  @media screen and (max-width: 767px) {
+    .messages-box .is_me .message-text {
+      text-align: right; } }
   .messages-box .icon-loading {
     width: 99%; }
 
@@ -148,22 +160,22 @@ a img {
     margin-bottom: 10px; }
 
 .color-0 {
-  color: maroon; }
+  color: maroon !important; }
 
 .color-1 {
-  color: #4a8000; }
+  color: #4a8000 !important; }
 
 .color-2 {
-  color: #00806a; }
+  color: #00806a !important; }
 
 .color-3 {
-  color: #003b80; }
+  color: #003b80 !important; }
 
 .color-4 {
-  color: #805900; }
+  color: #805900 !important; }
 
 .color-5 {
-  color: #008011; }
+  color: #008011 !important; }
 
 @media screen and (min-width: 768px) {
   .modal {

@@ -191,32 +191,38 @@ var ChatApp = function() {
     self.startSocket = function () {
         var conversation = {server: true};
         makeConversation(conversation);
+        conversation.systemMessage('Conversation created', self.io);
         self.io.sockets.on('connection', function (socket) {
-            socket.join(conversation.conversation_name);
-            socket.emit('initialize history', {chatters: conversation.chatters, messages: conversation.messages});
+            if (conversation.locked) {
+                socket.emit('chat locked');
+                socket.emit('new message', {text: 'Sorry, this conversation is locked'});
+                socket.disconnect('unauthorized');
+                return;
+            }
             socket.on('new message', function (data) {
                 var message = new conversation.Message(data);
                 self.io.sockets.in(conversation.conversation_name).emit('new message', data);
             });
             socket.on('join chat', function (data) {
-                // test whether name is in use
-                if (conversation.chatters.get(data.name)) {
-                    console.log('Username ' + data.name + ' already in use');
-                    setTimeout(function () {
-                        socket.emit('callback', 'join chat', {accepted: false});
-                    }, 500);
+                if (conversation.locked) {
+                    socket.emit('callback', 'join chat', 
+                        {accepted: false, error: 'Sorry, the chat has been locked'});
+                }
+                else if (conversation.chatters.get(data.name)) {
+                    socket.emit('callback', 'join chat', 
+                        {accepted: false, error: 'Sorry, the username ' + data.name + ' is already in use'});
                 }
                 else {
                     console.log(data.name + ' joined the conversation');
                     var new_chatter = new conversation.Chatter(data);
                     socket.chatter = new_chatter;
-                    setTimeout(function () {
-                        socket.emit('callback', 'join chat', {accepted: true});
-                    }, 500);
+                    socket.emit('callback', 'join chat', {accepted: true});
                     self.io.sockets.in(conversation.conversation_name).emit('new chatter', data);
+                    socket.join(conversation.conversation_name);
+                    socket.emit('initialize history', {chatters: conversation.chatters, messages: conversation.messages});
                 }
             });
-            socket.on('disconnect', function() {
+            var disconnect = function() {
                 if (socket.chatter) {
                     var name = socket.chatter.name;
                     var message = new conversation.Message({text: name + ' has left the conversation'});
@@ -224,10 +230,22 @@ var ChatApp = function() {
                     conversation.chatters.destroy(socket.chatter.name);
                     self.io.sockets.in(conversation.conversation_name).emit('chatter disconnected', {name: name});
                 }
-            });
+            };
+            socket.on('disconnect', disconnect);
+            socket.on('leave chat', disconnect);
             socket.on('clear messages', function() {
                 conversation.messages = [];
                 self.io.sockets.in(conversation.conversation_name).emit('clear messages');
+            });
+            socket.on('lock chat', function() {
+                conversation.locked = true;
+                self.io.sockets.in(conversation.conversation_name).emit('chat locked');
+                conversation.systemMessage(socket.chatter.name + ' has locked the chat', self.io);
+            });
+            socket.on('unlock chat', function() {
+                conversation.locked = false;
+                self.io.sockets.in(conversation.conversation_name).emit('chat unlocked');
+                conversation.systemMessage(socket.chatter.name + ' has unlocked the chat', self.io);
             });
         });
     };
