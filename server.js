@@ -206,10 +206,24 @@ var ChatApp = function() {
                 }
                 else {
                     console.log(data.name + ' joined the conversation');
-                    new conversation.Chatter(data);
+                    var new_chatter = new conversation.Chatter(data);
+                    socket.chatter = new_chatter;
                     socket.emit('callback', 'join chat', {accepted: true});
                     self.io.sockets.in(conversation.conversation_name).emit('new chatter', data);
                 }
+            });
+            socket.on('disconnect', function() {
+                if (socket.chatter) {
+                    var name = socket.chatter.name;
+                    var message = new conversation.Message({text: name + ' has left the conversation'});
+                    self.io.sockets.in(conversation.conversation_name).emit('new message', message);
+                    socket.chatter.destroy();
+                    self.io.sockets.in(conversation.conversation_name).emit('chatter disconnected', {name: name});
+                }
+            });
+            socket.on('clear messages', function() {
+                conversation.messages = [];
+                self.io.sockets.in(conversation.conversation_name).emit('clear messages');
             });
         });
     };
@@ -233,7 +247,7 @@ var ChatApp = function() {
 
 
     /**
-     *  Initializes the sample application.
+     *  Initializes the application.
      */
     self.initialize = function() {
         self.setupVariables();
@@ -258,13 +272,8 @@ var ChatApp = function() {
         });
     };
 
-};   /*  Sample Application.  */
+};
 
-
-
-/**
- *  main():  Main code.
- */
 var zapp = new ChatApp();
 zapp.initialize();
 zapp.start();

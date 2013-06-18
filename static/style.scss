@@ -54,9 +54,11 @@ a img {
 		background-color: lighten($gray, 8%);
 	}
 	.btn {
+		width: 180px;
 		margin-bottom: 10px;
 	}
 	.compact-only {
+		width: auto;
 		float: right;
 	}
 }

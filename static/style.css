@@ -44,8 +44,10 @@ a img {
       border-right: 1px solid #e6e6e6;
       background-color: #fafafa; } }
   .left-column .btn {
+    width: 180px;
     margin-bottom: 10px; }
   .left-column .compact-only {
+    width: auto;
     float: right; }
 
 .right-column, .title-bar, .chat-box {

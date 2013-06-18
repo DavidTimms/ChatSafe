@@ -29,6 +29,10 @@ function Conversation($scope) {
 		}
 		this.name = $scope.new_username;
 	};
+	$scope.Chatter.prototype.destroy = function () {
+		$scope.chatters.pop(this);
+		//this = undefined;
+	};
 
 	$scope.messages = [];
 	$scope.Message = function (data) {
@@ -63,6 +67,25 @@ function Conversation($scope) {
 	};
 	$scope.newMessage = function (text, sender, time) {
 		new $scope.Message({text: text, sender: sender, time: time});
+	};
+	$scope.systemMessage = function (text) {
+		if ($scope.server) {
+			new $scope.Message({text: text});
+			self.io.sockets.in($scope.conversation_name).emit('new message', {text: text});
+		}
+		else {
+			socket.emit('new message', {text: text});
+		}
+	};
+	$scope.clearMessages = function () {
+		$scope.messages = [];
+		if ($scope.server) {
+			self.io.sockets.in($scope.conversation_name).emit('clear messages');
+		}
+		else {
+			socket.emit('clear messages');
+		}
+		$scope.systemMessage('All messages cleared');
 	};
 
 	if (!$scope.server) {
@@ -108,9 +131,10 @@ function Conversation($scope) {
 		    	$scope.$apply();
 			}
 		});
-		$scope.systemMessage = function (text) {
-			socket.emit('new message', {text: text});
-		};
+		socket.on('clear messages', function () {
+			$scope.messages = [];
+			$scope.$apply();
+		});
 
 		$scope.setUsername = function () {
 			if ($scope.new_username !== '') {
@@ -142,6 +166,10 @@ function Conversation($scope) {
 			new $scope.Chatter(data);
 			$scope.$apply();
 		});
+		socket.on('chatter disconnected', function (data) {
+			$scope.chatters.get(data.name).destroy();
+			$scope.$apply();
+		});
 
 		$scope.scrollDown = function () {
 			setTimeout(function () {
@@ -171,7 +199,6 @@ function Conversation($scope) {
 
 	$scope.lockChat = function () {
 		console.log('chat locked (feature not yet implemented)');
-		new $scope.Chatter({name:'Admin'});
 	};
 
 	if ($scope.server) {
