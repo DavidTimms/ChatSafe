@@ -51,7 +51,7 @@
 						<div class="message-text span9">Join the conversation to see messages</div>
 					</div>
 					<div class="message row-fluid color-{{chatters.get(message.sender).id % 6}} {{chatters.get(message.sender).isMe()}}" ng-repeat="message in messages | orderBy: 'time'">
-			        	<strong class="sender span3" ng-hide="message.sender == undefined">{{message.sender}}<small>{{message.timeString()}}</small></strong>
+			        	<strong class="sender span3"><!--ng-hide="message.sender == undefined"-->{{message.sender}}<small>{{message.timeString()}}</small></strong>
 			        	<div class="message-text span9">{{message.text}}</div>
 			    	</div>
 				</div>
