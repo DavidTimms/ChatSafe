@@ -19,8 +19,7 @@ var ChatApp = function() {
     self.setupVariables = function() {
         //  Set the environment variables we need.
         self.ipaddress = process.env.OPENSHIFT_INTERNAL_IP;
-        self.port      = process.env.OPENSHIFT_INTERNAL_PORT || 8080;
-        // self.port      = 8000;
+        self.port      = process.env.OPENSHIFT_INTERNAL_PORT || 8000;
 
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
@@ -215,8 +214,7 @@ var ChatApp = function() {
                 }
                 else {
                     console.log(data.name + ' joined the conversation');
-                    var new_chatter = new conversation.Chatter(data);
-                    socket.chatter = new_chatter;
+                    socket.chatter =  new conversation.Chatter(data);
                     socket.emit('callback', 'join chat', {accepted: true});
                     self.io.sockets.in(conversation.conversation_name).emit('new chatter', data);
                     socket.join(conversation.conversation_name);
@@ -229,7 +227,14 @@ var ChatApp = function() {
                     var message = new conversation.Message({text: name + ' has left the conversation'});
                     self.io.sockets.in(conversation.conversation_name).emit('new message', message);
                     conversation.chatters.destroy(socket.chatter.name);
+                    socket.leave(conversation.conversation_name);
                     self.io.sockets.in(conversation.conversation_name).emit('chatter disconnected', {name: name});
+                    // reset conversation if everyone has left
+                    if (conversation.chatters.length === 0) {
+                        conversation.messages = [];
+                        conversation.systemMessage('Conversation created', self.io);
+                        conversation.locked = false;
+                    }
                 }
             };
             socket.on('disconnect', disconnect);
