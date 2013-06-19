@@ -1,9 +1,9 @@
-function Conversation($scope) {
+function Chat($scope) {
 	if (!$scope.server) {
 		window.ng_scope = $scope;
 	}
 	var i;
-	$scope.conversation_name = $scope.conversation_name || 'Chat';
+	$scope.chat_name = $scope.chat_name || 'Chat';
 	$scope.my_username = undefined;
 
 	$scope.chatters = [];
@@ -90,7 +90,7 @@ function Conversation($scope) {
 	$scope.systemMessage = function (text, io) {
 		if ($scope.server) {
 			new $scope.Message({text: text});
-			io.sockets.in($scope.conversation_name).emit('new message', {text: text});
+			io.sockets.in($scope.chat_name).emit('new message', {text: text});
 		}
 		else {
 			socket.emit('new message', {text: text});
@@ -103,7 +103,7 @@ function Conversation($scope) {
 							if (accepted) {
 								$scope.messages = [];
 								if ($scope.server) {
-									self.io.sockets.in($scope.conversation_name).emit('clear messages');
+									self.io.sockets.in($scope.chat_name).emit('clear messages');
 								}
 								else {
 									socket.emit('clear messages');
@@ -124,6 +124,7 @@ function Conversation($scope) {
 			socket.callback[func](response);
 		});
 		socket.on('initialize history', function (data) {
+			$scope.chat_name = data.chat_name;
 			for (i = 0; i < data.messages.length; i++) {
 				new $scope.Message(data.messages[i]);
 			}
@@ -188,7 +189,7 @@ function Conversation($scope) {
 					$scope.my_username = $scope.new_username;
 					$('#username_modal').modal('hide');
 					$scope.username_error = undefined;
-					$scope.systemMessage(name + ' has joined the conversation');
+					$scope.systemMessage(name + ' has joined the chat');
 				}
 				else {
 					$scope.username_error = response.error;
@@ -206,10 +207,10 @@ function Conversation($scope) {
 			$scope.$apply();
 		});
 		$scope.leaveChat = function () {
-			//var message = new conversation.Message({text: $scope.my_username + ' has left the conversation'});
+			//var message = new chat.Message({text: $scope.my_username + ' has left the chat'});
 			//socket.emit('new message', message);
 			$scope.confirm(	'Leave chat?', 
-							'Are you sure you wish to leave the conversation?', 
+							'Are you sure you wish to leave the chat?', 
 							function (accepted) {
 								if (accepted) {
 									$scope.chatters.destroy($scope.my_username);
@@ -301,13 +302,14 @@ function Conversation($scope) {
 	    new $scope.newMessage('humbug', 'Dave', mins_ago(8));
 	    new $scope.newMessage('Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et ', 'Ved Uttamchandani', mins_ago(8));
 	    new $scope.newMessage('Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.', 'Dave', mins_ago(6));
-	    new $scope.newMessage('Matt has joined the conversation', undefined, mins_ago(5));
+	    new $scope.newMessage('Matt has joined the chat', undefined, mins_ago(5));
 	    new $scope.newMessage('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Matt', mins_ago(4));
 	    new $scope.newMessage('lol TDD 4life', 'Rob', mins_ago(3));
 	    new $scope.newMessage('goodbye world', 'Dave', mins_ago(3));
 	    */
 	}
+	return $scope;
 }
 // for Node require command
 var module = module || {};
-module.exports = Conversation;
+module.exports = Chat;

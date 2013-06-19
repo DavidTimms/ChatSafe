@@ -2,7 +2,7 @@
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
-var makeConversation = require('./static/chat.js');
+var makeChat = require('./static/chat.js');
 
 
 /**
@@ -188,72 +188,74 @@ var ChatApp = function() {
         return file_name;
     };
 
-    self.startSocket = function () {
-        var conversation = {server: true};
-        makeConversation(conversation);
-        conversation.systemMessage('Conversation created', self.io);
+    self.createChat = function (chat_name) {
+        var chat = makeChat({server: true, chat_name: chat_name});
+        chat.systemMessage('Chat created', self.io);
         self.io.sockets.on('connection', function (socket) {
-            if (conversation.locked) {
+            if (chat.locked) {
                 socket.emit('chat locked');
-                socket.emit('new message', {text: 'Sorry, this conversation is locked'});
+                socket.emit('new message', {text: 'Sorry, this chat is locked'});
                 socket.disconnect('unauthorized');
                 return;
             }
             socket.on('new message', function (data) {
-                var message = new conversation.Message(data);
-                self.io.sockets.in(conversation.conversation_name).emit('new message', data);
+                var message = new chat.Message(data);
+                self.io.sockets.in(chat.chat_name).emit('new message', data);
             });
             socket.on('join chat', function (data) {
-                if (conversation.locked) {
+                if (chat.locked) {
                     socket.emit('callback', 'join chat', 
                         {accepted: false, error: 'Sorry, the chat has been locked'});
                 }
-                else if (conversation.chatters.get(data.name)) {
+                else if (chat.chatters.get(data.name)) {
                     socket.emit('callback', 'join chat', 
                         {accepted: false, error: 'Sorry, the username ' + data.name + ' is already in use'});
                 }
                 else {
-                    console.log(data.name + ' joined the conversation');
-                    socket.chatter =  new conversation.Chatter(data);
+                    console.log(data.name + ' joined the chat');
+                    socket.chatter =  new chat.Chatter(data);
                     socket.emit('callback', 'join chat', {accepted: true});
-                    self.io.sockets.in(conversation.conversation_name).emit('new chatter', data);
-                    socket.join(conversation.conversation_name);
-                    socket.emit('initialize history', {chatters: conversation.chatters, messages: conversation.messages});
+                    self.io.sockets.in(chat.chat_name).emit('new chatter', data);
+                    socket.join(chat.chat_name);
+                    socket.emit('initialize history', { chat_name: chat.chat_name, 
+                                                        chatters: chat.chatters, 
+                                                        messages: chat.messages});
                 }
             });
             var disconnect = function() {
                 if (socket.chatter) {
                     var name = socket.chatter.name;
-                    var message = new conversation.Message({text: name + ' has left the conversation'});
-                    self.io.sockets.in(conversation.conversation_name).emit('new message', message);
-                    conversation.chatters.destroy(socket.chatter.name);
-                    socket.leave(conversation.conversation_name);
-                    self.io.sockets.in(conversation.conversation_name).emit('chatter disconnected', {name: name});
-                    // reset conversation if everyone has left
-                    if (conversation.chatters.length === 0) {
-                        conversation.messages = [];
-                        conversation.systemMessage('Conversation created', self.io);
-                        conversation.locked = false;
+                    var message = new chat.Message({text: name + ' has left the chat'});
+                    self.io.sockets.in(chat.chat_name).emit('new message', message);
+                    chat.chatters.destroy(socket.chatter.name);
+                    socket.leave(chat.chat_name);
+                    self.io.sockets.in(chat.chat_name).emit('chatter disconnected', {name: name});
+                    // reset chat if everyone has left
+                    if (chat.chatters.length === 0) {
+                        chat.messages = [];
+                        chat.systemMessage('Chat created', self.io);
+                        chat.locked = false;
                     }
                 }
             };
             socket.on('disconnect', disconnect);
             socket.on('leave chat', disconnect);
             socket.on('clear messages', function() {
-                conversation.messages = [];
-                self.io.sockets.in(conversation.conversation_name).emit('clear messages');
+                chat.messages = [];
+                self.io.sockets.in(chat.chat_name).emit('clear messages');
             });
             socket.on('lock chat', function() {
-                conversation.locked = true;
-                self.io.sockets.in(conversation.conversation_name).emit('chat locked');
-                conversation.systemMessage(socket.chatter.name + ' has locked the chat', self.io);
+                chat.locked = true;
+                self.io.sockets.in(chat.chat_name).emit('chat locked');
+                chat.systemMessage(socket.chatter.name + ' has locked the chat', self.io);
             });
             socket.on('unlock chat', function() {
-                conversation.locked = false;
-                self.io.sockets.in(conversation.conversation_name).emit('chat unlocked');
-                conversation.systemMessage(socket.chatter.name + ' has unlocked the chat', self.io);
+                chat.locked = false;
+                self.io.sockets.in(chat.chat_name).emit('chat unlocked');
+                chat.systemMessage(socket.chatter.name + ' has unlocked the chat', self.io);
             });
         });
+        return chat;
     };
 
     /**
@@ -265,7 +267,7 @@ var ChatApp = function() {
         self.app = express();
         self.server = require('http').createServer(self.app);
         self.io = require('socket.io').listen(self.server);
-        self.startSocket();
+        self.createChat('DaveChat');
 
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
