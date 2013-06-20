@@ -263,8 +263,8 @@ var ChatApp = function() {
                                                                 chatters: chat.chatters, 
                                                                 messages: chat.messages});
                             socket.emit('callback', 'join chat', {accepted: true});
+                            self.setupEvents(socket, chat);
                         }
-                        self.setupEvents(socket, chat);
                     }
                     else {
                         socket.emit('callback', 'join chat', 
