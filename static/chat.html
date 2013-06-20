@@ -10,6 +10,7 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
 		<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+		<script src="gibberish-aes-1.0.0.min.js"></script>
 		<script src="chat.js"></script>
 	</head>
 	<body>
@@ -17,6 +18,7 @@
 
 		    <div class="left-column">
 		    	<button class="btn compact-only" ng-click="hideSidebar()"><i class="icon-chevron-left"></i></button>
+		    	<img src="chatsafe.png" class="logo" />
 		    	<ul class="nav nav-tabs nav-stacked">
 					<li ng-repeat="chatter in chatters">
 			        	<a class="color-{{chatter.id % 6}} {{chatter.isMe()}}">{{chatter.name}}</a>
@@ -75,7 +77,7 @@
 				</div>
 				<div class="modal-footer">
 					<i class="icon-loading" ng-show="join_loading"></i> 
-					<a href="#" class="btn btn-primary" ng-disabled="join_loading" ng-click="setUsername()">Join</a>
+					<a href="#" class="btn btn-inverse" ng-disabled="join_loading" ng-click="setUsername()">Join</a>
 				</div>
 			</div>
 
@@ -90,7 +92,7 @@
 				</div>
 				<div class="modal-footer">
 					<a href="#" class="btn" ng-click="confirm_modal.respond(false)">No</a>
-					<a href="#" class="btn btn-primary" ng-click="confirm_modal.respond(true)">Yes</a>
+					<a href="#" class="btn btn-inverse" ng-click="confirm_modal.respond(true)">Yes</a>
 				</div>
 			</div>
 		</div>

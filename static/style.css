@@ -36,8 +36,12 @@ a img {
   overflow: auto; }
   .left-column.sidebar_out {
     left: 0px; }
+  .left-column .logo {
+    width: 171px;
+    height: 127px; }
   .left-column .nav {
-    margin-top: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     font-weight: bold;
     text-align: left;
     clear: both; }
@@ -47,7 +51,11 @@ a img {
     .left-column {
       left: -220px;
       border-right: 1px solid #e6e6e6;
-      background-color: #fafafa; } }
+      background-color: #fafafa; }
+      .left-column .logo {
+        width: 145px;
+        height: auto;
+        margin-left: -15px; } }
   .left-column .btn {
     width: 170px;
     margin-bottom: 10px; }
@@ -83,10 +91,20 @@ a img {
 
 .title-bar {
   position: fixed;
+  top: 0px;
   height: 60px;
   background-color: rgba(255, 255, 255, 0.85);
   z-index: 10;
-  line-height: 60px; }
+  line-height: 60px;
+  /*
+  @media screen and (min-width: $narrow) {
+  	h1 {
+  		font-size: 50px;
+  		height: 80px;
+  		line-height: 80px;
+  	}
+  }
+  */ }
   .title-bar h1 {
     display: inline;
     font-size: 25px;

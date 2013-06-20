@@ -117,7 +117,7 @@ function Chat($scope) {
 
 	// Client-side only logic
 	if (!$scope.server) {
-		window.title += ' - ' + $scope.chat_name;
+		document.title = $scope.chat_name + ' | ' + document.title;
 		var socket = io.connect('http://' + window.location.hostname + ':8000');
 		socket.callback = {};
 		socket.emitWithCallback = function (name, data, callback) {
@@ -253,6 +253,7 @@ function Chat($scope) {
 		};
 		$scope.toggleLocked = function () {
 			if ($scope.locked) {
+				
 				socket.emit('unlock chat');
 			}
 			else {
