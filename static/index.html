@@ -1,97 +1,56 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" ng-app>
 	<head>
-		<title>DaveChat</title>
+		<title>ChatSafe</title>
 		<meta name="viewport" content="width=305, user-scalable=no" />
 		<!--<link href="bootstrap-combined.min.css" rel="stylesheet">-->
-		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="style.css" />
+		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
 		<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
-		<script src="chat.js"></script>
+		<style>
+			.container {
+				max-width: 800px;
+			}
+		</style>
+		<script>
+			$(document).ready(function () {
+				$('.alert').hide();
+				$('#new_chat_form').submit(function (e) {
+					e.preventDefault();
+					var chat_name = $('#chat_name').val()
+						.split(' ').join('_')
+						.split('.').join('_')
+						.split('?').join('_')
+						.split('&').join('_')
+						.split('/').join('_');
+					$.getJSON('new/' + chat_name, function(res) {
+						if (res.error) {
+							console.log(res.error);
+							$('.alert').html(res.error).fadeIn(250);
+						}
+						else {
+							window.location = res.redirect;
+						}
+					});
+				});
+			});
+		</script>
 	</head>
 	<body>
-		<div class="container" ng-controller="Chat">
-
-		    <div class="left-column">
-		    	<button class="btn compact-only" ng-click="hideSidebar()"><i class="icon-chevron-left"></i></button>
-		    	<ul class="nav nav-tabs nav-stacked">
-					<li ng-repeat="chatter in chatters">
-			        	<a class="color-{{chatter.id % 6}} {{chatter.isMe()}}">{{chatter.name}}</a>
-			    	</li>
-			    </ul>
-			    <button class="btn btn-danger" ng-show="my_username" ng-click="clearMessages()">
-			    	<i class="icon-trash icon-white"></i> Clear Messages
-			    </button><br />
-			    <button class="btn" ng-class="{'btn-success': locked}" ng-show="my_username" ng-click="toggleLocked()">
-			    	<i class="icon-lock" ng-class="{'icon-white': locked}"></i>
-			    	<span ng-show="locked">Unlock</span>
-			    	<span ng-hide="locked">Lock</span>
-			    	Chat
-			    </button><br />
-			    <button class="btn" ng-show="my_username" ng-click="leaveChat()">
-			    	<i class="icon-arrow-left"></i> Leave Chat
-			    </button><br />
-			    <a class="hidden" href="#username_modal" ng-show="my_username" data-toggle="modal">
-			    	Change Username
-			    </a>
-		    </div>
-
-		    <div class="right-column">
-				<div class="title-bar">
-					<button class="btn compact-only" ng-show="my_username" ng-click="showSidebar()">
-						<i class="icon-chevron-right"></i>
-					</button>
-					<h1>{{chat_name}}</h1>
+		<div class="container">
+			<div class="hero-unit">
+				<h1>ChatSafe</h1>
+				<p>Chat with anyone, anywhere, securely</p>
+				<br />
+				<div class="alert alert-error">
+					Your Browser does not support ChatSafe
 				</div>
-				<div class="messages-box" id="messages-box">
-					<div class="message row-fluid" ng-hide="messages.length > 0">
-						<div class="message-text span9">Join the chat to see messages</div>
-					</div>
-					<div class="message row-fluid color-{{chatters.get(message.sender).id % 6}} {{chatters.get(message.sender).isMe()}}" ng-repeat="message in messages | orderBy: 'time'">
-			        	<strong class="sender span3"><!--ng-hide="message.sender == undefined"-->{{message.sender}}<small>{{message.timeString()}}</small></strong>
-			        	<div class="message-text span9">{{message.text}}</div>
-			    	</div>
-				</div>
-				<form class="chat-box"ng-submit="sendMessage()">
-					<textarea id="message_textarea"  ng-show="my_username" ng-model="message_text"></textarea>
-					<input type="submit" value="send" class="btn"  ng-show="my_username" />
-			    	<a href="#username_modal" class="btn btn-large" ng-hide="locked || my_username" data-toggle="modal">
-			    		Join the conversation
-			    	</a>
+				<form class="input-append" id="new_chat_form">
+					<input type="text" class="input-xlarge" 
+						placeholder="Pick a title for your chat" id="chat_name" name="chat_name" />
+					<input type="submit" class="btn btn-primary" value="Start Chat" />
 				</form>
-		    </div>
-		    <!-- Username Modal -->
-		    <div id="username_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3>Set Username</h3>
-				</div>
-				<div class="modal-body">
-					<div class="alert alert-error" ng-show="username_error">{{username_error}}</div>
-			    	<input class="username" type="text" placeholder="Type a username here" ng-model="new_username" ng-disabled="join_loading" />
-				</div>
-				<div class="modal-footer">
-					<i class="icon-loading" ng-show="join_loading"></i> 
-					<a href="#" class="btn btn-primary" ng-disabled="join_loading" ng-click="setUsername()">Join</a>
-				</div>
-			</div>
-
-		    <!-- Confirm Modal -->
-		    <div id="confirm_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3>{{confirm_modal.title}}</h3>
-				</div>
-				<div class="modal-body">
-					{{confirm_modal.message}}
-				</div>
-				<div class="modal-footer">
-					<a href="#" class="btn" ng-click="confirm_modal.respond(false)">No</a>
-					<a href="#" class="btn btn-primary" ng-click="confirm_modal.respond(true)">Yes</a>
-				</div>
 			</div>
 		</div>
 	</body>

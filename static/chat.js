@@ -1,10 +1,12 @@
 function Chat($scope) {
 	if (!$scope.server) {
 		window.ng_scope = $scope;
+		$scope.chat_url = $scope.chat_url || location.pathname.substring(1);
 	}
 	var i;
-	$scope.chat_name = $scope.chat_name || 'Chat';
+	$scope.chat_name = 	$scope.chat_name || $scope.chat_url.split('_').join(' ') || 'Chat';
 	$scope.my_username = undefined;
+	$scope.locked = false;
 
 	$scope.chatters = [];
 	$scope.chatters.get = function (name) {
@@ -113,18 +115,25 @@ function Chat($scope) {
 						});
 	};
 
+	// Client-side only logic
 	if (!$scope.server) {
+		window.title += ' - ' + $scope.chat_name;
 		var socket = io.connect('http://' + window.location.hostname + ':8000');
 		socket.callback = {};
 		socket.emitWithCallback = function (name, data, callback) {
 			socket.emit(name, data);
 			socket.callback[name] = callback;
 		}
-		socket.on('callback', function(func, response) {
+		socket.on('callback', function (func, response) {
 			socket.callback[func](response);
+		});
+		socket.on('connect', function () {
+			console.log('checking if chat is locked');
+			socket.emit('check if locked', {chat_url: $scope.chat_url});
 		});
 		socket.on('initialize history', function (data) {
 			$scope.chat_name = data.chat_name;
+			$scope.messages = [];
 			for (i = 0; i < data.messages.length; i++) {
 				new $scope.Message(data.messages[i]);
 			}
@@ -184,7 +193,8 @@ function Chat($scope) {
 		});
 		$scope.joinChat = function (name) {
 			$scope.join_loading = true;
-			socket.emitWithCallback('join chat', {name: name}, function (response) {
+			var chat_url = location.pathname.substring(1);
+			socket.emitWithCallback('join chat', {name: name, chat_url: chat_url}, function (response) {
 				if (response.accepted) {
 					$scope.my_username = $scope.new_username;
 					$('#username_modal').modal('hide');
