@@ -1,12 +1,14 @@
 {
-  "name": "DaveChat",
-  "version": "0.1.0",
-  "description": "DaveChat Instant Messaging App",
+  "name": "ChatSafe",
+  "version": "0.2.0",
+  "description": "ChatSafe Encrypted Instant Messaging App",
   "keywords": [
-    "OpenShift",
     "Node.js",
     "application",
-    "openshift"
+    "chat",
+    "IM",
+    "secure",
+    "encrypted"
   ],
   "author": {
     "name": "David Timms",
