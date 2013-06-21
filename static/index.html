@@ -36,6 +36,16 @@
 			}
 		</style>
 		<script>
+			function generateKey () {
+				var key = '';
+				for (var i = 0; i < 64; i += 1) {
+					var code = 55 + Math.floor(Math.random()*36);
+					if (code < 65) code -= 7;
+					key += String.fromCharCode(code);
+				}
+				return key;
+			};
+
 			$(document).ready(function () {
 				$('.alert').hide();
 				$('#new_chat_form').submit(function (e) {
@@ -52,7 +62,7 @@
 							$('.alert').html(res.error).fadeIn(250);
 						}
 						else {
-							window.location = res.redirect;
+							window.location = res.redirect + '#' + generateKey();
 						}
 					});
 				});

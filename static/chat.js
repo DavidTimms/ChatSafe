@@ -2,12 +2,13 @@ function Chat($scope) {
 	if (!$scope.server) {
 		window.ng_scope = $scope;
 		$scope.chat_url = $scope.chat_url || location.pathname.substring(1);
+		$scope.key = location.hash.substring(1);
+		console.log($scope.key);
 	}
 	var i;
 	$scope.chat_name = 	$scope.chat_name || $scope.chat_url.split('_').join(' ') || 'Chat';
 	$scope.my_username = undefined;
 	$scope.locked = false;
-
 	$scope.chatters = [];
 	$scope.chatters.get = function (name) {
 		for (var i = 0; i<this.length; i++) {
@@ -140,6 +141,7 @@ function Chat($scope) {
 				$scope.chatters.pop();
 			}
 			for (i = 0; i < data.messages.length; i++) {
+				data.messages[i].text = $scope.decrypt(data.messages[i].text);
 				new $scope.Message(data.messages[i]);
 			}
 			for (i = 0; i < data.chatters.length; i++) {
@@ -151,7 +153,7 @@ function Chat($scope) {
 		});
 		socket.on('new message', function (data) {
 			if (data.sender !== $scope.my_username || !data.sender) {
-				console.log('message: ' + data.text);
+				data.text = $scope.decrypt(data.text);
 				new $scope.Message(data);
 			}
 			$scope.$apply();
@@ -159,9 +161,12 @@ function Chat($scope) {
 		});
 		$scope.sendMessage = function() {
 			if ($scope.message_text !== '') {
-				var message = new $scope.Message({text: $scope.message_text, sender: $scope.my_username});
+				var original_text = $scope.message_text;
+				var enc_text =  'ENCRYPTED: ' + GibberishAES.enc(original_text, $scope.key);
+				var message = new $scope.Message({text: enc_text, sender: $scope.my_username});
 			    $scope.message_text = '';
 			    socket.emit('new message', message);
+			    message.text = original_text;
 		    }
 		};
 		// Send message on enter key
@@ -288,6 +293,13 @@ function Chat($scope) {
 			console.log('chat unlocked');
 			$scope.$apply();
 		});
+
+		$scope.decrypt = function (text) {		
+			if (text.indexOf('ENCRYPTED:') === 0) {
+				text = GibberishAES.dec(text.substring(11), $scope.key);
+			}
+			return text;
+		}
 
 		// Sidebar sliding
 		var slide_speed = 300;
