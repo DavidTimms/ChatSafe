@@ -281,6 +281,7 @@ var ChatApp = function() {
 
     self.setupEvents = function (socket, chat) {
         socket.on('new message', function (data) {
+            console.log('connections: ' + self.io.sockets.clients(chat.chat_name).length);
             var message = new chat.Message(data);
             self.io.sockets.in(chat.chat_name).emit('new message', data);
         });

@@ -95,6 +95,7 @@ function Chat($scope) {
 			io.sockets.in($scope.chat_name).emit('new message', {text: text});
 		}
 		else {
+			console.log('emitting message: ' + text);
 			socket.emit('new message', {text: text});
 		}
 	};
@@ -114,11 +115,10 @@ function Chat($scope) {
 							};
 						});
 	};
-
 	// Client-side only logic
-	if (!$scope.server) {
+	$scope.clientConnection = function () {
 		document.title = $scope.chat_name + ' | ' + document.title;
-		var socket = io.connect('http://' + window.location.hostname + ':8000');
+		socket = io.connect('http://' + window.location.hostname + ':8000');
 		socket.callback = {};
 		socket.emitWithCallback = function (name, data, callback) {
 			socket.emit(name, data);
@@ -133,7 +133,12 @@ function Chat($scope) {
 		});
 		socket.on('initialize history', function (data) {
 			$scope.chat_name = data.chat_name;
+			// Clear messages array
 			$scope.messages = [];
+			// Clear chatters array
+			while ($scope.chatters.length > 0) {
+				$scope.chatters.pop();
+			}
 			for (i = 0; i < data.messages.length; i++) {
 				new $scope.Message(data.messages[i]);
 			}
@@ -146,6 +151,7 @@ function Chat($scope) {
 		});
 		socket.on('new message', function (data) {
 			if (data.sender !== $scope.my_username || !data.sender) {
+				console.log('message: ' + data.text);
 				new $scope.Message(data);
 			}
 			$scope.$apply();
@@ -194,7 +200,9 @@ function Chat($scope) {
 		$scope.joinChat = function (name) {
 			$scope.join_loading = true;
 			var chat_url = location.pathname.substring(1);
+			console.log('emitting join request');
 			socket.emitWithCallback('join chat', {name: name, chat_url: chat_url}, function (response) {
+				console.log('received join request');
 				if (response.accepted) {
 					$scope.my_username = $scope.new_username;
 					$('#username_modal').modal('hide');
@@ -224,8 +232,11 @@ function Chat($scope) {
 							function (accepted) {
 								if (accepted) {
 									$scope.chatters.destroy($scope.my_username);
-									socket.emit('leave chat');
-									$scope.my_username = undefined;
+									//socket.emit('leave chat');
+									//$scope.my_username = undefined;
+									socket.disconnect();
+									location.reload();
+									//window.socket = $scope.clientConnection();
 								}
 							});
 		};
@@ -253,8 +264,15 @@ function Chat($scope) {
 		};
 		$scope.toggleLocked = function () {
 			if ($scope.locked) {
-				
-				socket.emit('unlock chat');
+				$scope.confirm(	'Clear messages?', 
+								'Would you like to delete all messages from the chat history before unlocking?', 
+								function (accepted) {
+									if (accepted) {
+										socket.emit('clear messages');
+										$scope.systemMessage('All messages cleared');
+									};
+									socket.emit('unlock chat');
+								});
 			}
 			else {
 				socket.emit('lock chat');
@@ -288,9 +306,13 @@ function Chat($scope) {
 				sidebar.removeClass('sidebar_out').css({left: ''});
 			});
 		};
+		return socket;
 	}
 
-	if ($scope.server) {
+	if (!$scope.server) {
+		var socket = $scope.clientConnection();
+	}
+	else {
 		test();
 	}
 	function test () {
