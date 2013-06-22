@@ -27,6 +27,7 @@ var ChatApp = function() {
             console.warn('No OPENSHIFT_INTERNAL_IP var, using 127.0.0.1');
             self.ipaddress = "127.0.0.1";
         };
+        console.log(self.ipaddress + ':' + self.port);
     };
 
 
