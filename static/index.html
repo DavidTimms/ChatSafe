@@ -7,12 +7,15 @@
 		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 		<style>
+			html {
+				overflow-y: scroll;
+			}
 			body {
 				min-width: 300px;
+				padding-bottom: 50px;
 			}
 			.container {
-				max-width: 470px;
-				text-align: center;
+				max-width: 550px;
 			}
 			.logo {
 				width: 342px;
@@ -21,13 +24,15 @@
 			}
 			.hero-unit {
 				padding-bottom: 45px;
+				text-align: center;
+				/*
+				padding: 60px 0px;
+				*/
 			}
 			@media screen and (max-width: 500px) {
 				.logo {
 					height: auto;
 				}
-			}
-			@media screen and (max-width: 450px) {
 				.hero-unit {
 					padding-left: 30px;
 					padding-right: 30px;
@@ -36,8 +41,27 @@
 			.input-append input {
 				font-size: 16px;
 			}
+			@media screen and (min-width: 500px) {
+				#chat_name {
+					width: 270px;
+				}
+			}
 			alert {
 				text-align: left;
+			}
+			.info-links {
+				text-align: center;
+				height: 45px;
+			}
+			.info-links a {
+				display: inline-block;
+				width: 30%;
+				font-size: 125%;
+				color: gray;
+			}
+			.section {
+				border-top: 1px solid rgb(238, 238, 238);
+				display: none;
 			}
 		</style>
 		<script>
@@ -71,6 +95,39 @@
 						}
 					});
 				});
+				$.fn.customShow = function (speed) {
+			        this.show().find("p, h1, h2, h3, h4, li, button").each(function (i) {
+				        var elem = $(this).css({position: "relative", opacity: "0", left: "120px"})
+						setTimeout(function () {
+							elem.animate({opacity: "1", left: "0px"}, speed);
+						}, i*40);
+			        });
+			    }
+				var showSection = function (e) {
+					console.log(location.hash);
+					if (!showSection.running && $(location.hash).get(0)) {
+						showSection.running = true;
+						if (!showSection.first_shown) {
+							var sec = location.hash;
+							$(sec).customShow(500);
+							showSection.curr_section = sec;
+							showSection.first_shown = true;
+							console.log('first shown');
+							showSection.running = false;
+						}
+						else {
+							$(showSection.curr_section).fadeOut(200, function () {
+								var sec = location.hash;
+								$(sec).customShow(500);
+								showSection.curr_section = sec;
+								showSection.running = false;
+							});
+						}
+					}
+				};
+				window.onload = showSection;
+				window.onhashchange = showSection;
+				$('.info-links a').click(showSection);
 			});
 		</script>
 	</head>
@@ -89,6 +146,39 @@
 						placeholder="Pick a title for your chat" id="chat_name" name="chat_name" />
 					<input type="submit" class="btn btn-inverse" value="Chat" />
 				</form>
+			</div>
+			<div class="info-links">
+				<a href="#how">How</a>
+				<a href="#why">Why</a>
+				<a href="#who">Who</a>
+			</div>
+			<div class="section" id="how">
+				<h2>How to use ChatSafe</h2>
+				<p>
+					Do some shit
+				</p>
+				<h2>How it works</h2>
+				<p>
+					Do some shit
+				</p>
+			</div>
+			<div class="section" id="why">
+				<h2>Why was ChatSafe created</h2>
+				<p>
+					People have a right to communicate in private without being tracked, recorded or monitored. Chatsafe provides 
+					a simple, fast, browser-based instant messaging service for people to do this.</p><p> You shouldn't have to trust any
+					external service to protect your communication data. With ChatSafe, even if somebody has access to our servers
+					they cannot read your messages.
+				</p>
+			</div>
+			<div class="section" id="who">
+				<h2>Who Created ChatSafe</h2>
+				<p>
+					ChatSafe was created by 
+					<a href="http://www.davidtimms.co.uk">David Timms</a>,
+					a student and web developer from Bristol, UK. If you have any questions or feedback about the site, send me a message on 
+					<a href="http://www.davidtimms.co.uk">my website</a>.
+				</p>
 			</div>
 		</div>
 	</body>

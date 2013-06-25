@@ -18,8 +18,8 @@ var ChatApp = function() {
      */
     self.setupVariables = function() {
         //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_INTERNAL_IP;
-        self.port      = process.env.OPENSHIFT_INTERNAL_PORT || 8000;
+        self.ipaddress = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP;
+        self.port      = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_IP || 8000;
 
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
@@ -34,20 +34,32 @@ var ChatApp = function() {
     /**
      *  Populate the cache.
      */
-    self.populateCache = function() {
+    self.populateCache = function () {
         if (typeof self.zcache === "undefined") {
             self.zcache = { 'index.html': '' };
         }
 
         //  Local cache for static content.
 
-        // TODO: replace with update cache function like pages
         for (var i=0; i<self.static_files.length; i++) {
             self.zcache[self.static_files[i]] = fs.readFileSync('./static/' + self.static_files[i]);
         }
     };
 
-    self.dirFiles = function(dir_path) {
+    self.refreshCache = function () {
+        for (var i=0; i<self.static_files.length; i++) {
+            (function () {
+                var path = self.static_files[i];
+                fs.readFile('./static/' + path, function (error, data) {
+                    if (!error) {
+                    self.zcache[path] = data;
+                    }
+                });
+            }());
+        }
+    };
+
+    self.dirFiles = function (dir_path) {
         var file_list = [];
         var dir_items =  fs.readdirSync(dir_path);
 
@@ -347,6 +359,7 @@ var ChatApp = function() {
         //self.image_files = self.dirFiles('./images/');
         self.populateCache();
         self.setupTerminationHandlers();
+        setInterval(self.refreshCache, 1000);
 
         // Create the express server and routes.
         self.initializeServer();
