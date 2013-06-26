@@ -1,4 +1,4 @@
-CHATSAFE
+#ChatSafe
 
 A secure chat room service based on Node.js, Socket.io and AngularJS with AES encryption
 
