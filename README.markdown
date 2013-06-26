@@ -48,3 +48,8 @@ The following steps will allow you to use ChatSafe securely:
   <a href="http://www.davidtimms.co.uk">David Timms</a>,
   a student and web developer from Bristol, UK. If you have any questions or feedback about the site, send me a message on 
   <a href="http://www.davidtimms.co.uk">my website</a>.
+
+##Can I trust you?
+
+  You don't have to. ChatSafe is open source software, meaning anybody can 
+  <a href="https://github.com/DavidTimms/ChatSafe">view the source code</a>, so you can check that it does what I say it does.
