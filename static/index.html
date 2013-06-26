@@ -12,7 +12,7 @@
 			}
 			body {
 				min-width: 300px;
-				padding-bottom: 50px;
+				padding-bottom: 20px;
 			}
 			.container {
 				max-width: 550px;
@@ -62,6 +62,7 @@
 			.section {
 				border-top: 1px solid rgb(238, 238, 238);
 				display: none;
+				min-height: 615px;
 			}
 		</style>
 		<script>
@@ -109,7 +110,7 @@
 						showSection.running = true;
 						if (!showSection.first_shown) {
 							var sec = location.hash;
-							$(sec).customShow(500);
+							$(sec).fadeIn(500);
 							showSection.curr_section = sec;
 							showSection.first_shown = true;
 							console.log('first shown');
@@ -118,7 +119,7 @@
 						else {
 							$(showSection.curr_section).fadeOut(200, function () {
 								var sec = location.hash;
-								$(sec).customShow(500);
+								$(sec).fadeIn(500);
 								showSection.curr_section = sec;
 								showSection.running = false;
 							});
@@ -155,11 +156,45 @@
 			<div class="section" id="how">
 				<h2>How to use ChatSafe</h2>
 				<p>
-					Do some shit
+					The following steps will allow you to use ChatSafe securely:
+					<ol>
+						<li>
+							Use private/incognito browsing mode.
+						</li>
+						<li>
+							Create a chat using the box on the homepage.
+						</li>
+						<li>
+							Send the address of the newly created chat to anyone you want to chat with. This address contains the
+							key to the chat, so keep it safe. I recommend using <a href="https://privnote.com/">privnote</a> to send 
+							the address.
+						</li>
+						<li>
+							Once everyone has joined the chat, click the 'lock chat' button on the left of the chat page.
+						</li>
+						<li>
+							When you finish your conversation, click 'unlock chat' and when prompted click 'yes' to clear all messages 
+							from the chat.
+						</li>
+					</ol>
 				</p>
 				<h2>How it works</h2>
 				<p>
-					Do some shit
+					When you create a chat, a random key is generated and stored in the hash part of the URL. That's the part which
+					your browser can see but is not sent over the internet to the server. This key used to encrypt your messages 
+					in your browser before they are sent to the server. Once the message reaches the other members of the chat,
+					their browsers will get the key from the URL you sent them to join the chat, and use it to decrypt the message
+					back to its original form.
+				</p>
+				<p>
+					All encryption is done using the <a href="https://github.com/mdp/gibberish-aes">Gibberish AES</a> library, so it
+					follows the 256 bit AES specification. Because all encryption is done in the browser, not even the ChatSafe server 
+					can read messages, as it does not have the encryption key.
+				</p>
+				<p>
+					In case somebody does manage to get your chat URL, with the key to decrypt the messages, the lock feature can be used
+					to stop any new members from joining the chat, so they cannot access the messages. The chat is deleted from the server 
+					once all members have left.
 				</p>
 			</div>
 			<div class="section" id="why">
