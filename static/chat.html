@@ -50,7 +50,10 @@
 				</div>
 				<div class="messages-box" id="messages-box">
 					<div class="message row-fluid" ng-hide="messages.length > 0">
-						<div class="message-text span9">Join the chat to see messages</div>
+						<div class="message-text">
+							Securely send this address to the people you want to chat with: <br /><br />
+							<input type="text" style="width: 97%" value="{{page_url}}" />
+						</div>
 					</div>
 					<div class="message row-fluid color-{{chatters.get(message.sender).id % 6}} {{chatters.get(message.sender).isMe()}}" ng-repeat="message in messages | orderBy: 'time'">
 			        	<strong class="sender span3"><!--ng-hide="message.sender == undefined"-->{{message.sender}}<small>{{message.timeString()}}</small></strong>

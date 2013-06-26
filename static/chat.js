@@ -4,6 +4,7 @@ function Chat($scope) {
 		$scope.chat_url = $scope.chat_url || location.pathname.substring(1);
 		$scope.key = location.hash.substring(1);
 		console.log($scope.key);
+		$scope.page_url = location.href;
 	}
 	var i;
 	$scope.chat_name = 	$scope.chat_name || $scope.chat_url.split('_').join(' ') || 'Chat';
