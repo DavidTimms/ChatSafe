@@ -53,3 +53,9 @@ The following steps will allow you to use ChatSafe securely:
 
   You don't have to. ChatSafe is open source software, meaning anybody can 
   <a href="https://github.com/DavidTimms/ChatSafe">view the source code</a>, so you can check that it does what I say it does.
+  
+##SSL connection
+
+Changed it, ChatSafe uses only SSL connection now. In folder ```keys``` are the keys placed. *ssl.key* for private, *ssl.crt* for the certificate and for CA *ca.unified.pem*.
+
+**NOTE: only works with HTTPS now.**
