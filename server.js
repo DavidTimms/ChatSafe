@@ -17,7 +17,7 @@ var ChatApp = function() {
      */
     self.setupVariables = function() {
         //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP;
+        self.ipaddress = process.env.OPENSHIFT_INTERNAL_IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
         self.port      = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_IP || 8000;
 
         if (typeof self.ipaddress === "undefined") {
@@ -111,7 +111,6 @@ var ChatApp = function() {
             process.on(element, function() { self.terminator(element); });
         });
     };
-
     self.createRoutes = function() {
         self.routes = { };
 
@@ -169,8 +168,8 @@ var ChatApp = function() {
             }
             else {
                 res.status(302);
-                console.log('redirecting to http://' + req.headers.host);
-                res.setHeader('Location', 'http://' + req.headers.host);
+                console.log('redirecting to https://' + req.headers.host);
+                res.setHeader('Location', 'https://' + req.headers.host);
                 res.setHeader('Content-Type', 'text/html');
                 var error_page = '<html><body style="';
                 error_page += 'text-align: center; color: #444448; background-color: #EEEEF3; font-family: sans-serif';
@@ -211,8 +210,8 @@ var ChatApp = function() {
     };
 
     self.mimeType = {   txt: "text/plain",
-                        html: "text/html", 
-                        css: "text/css", 
+                        html: "text/html",
+                        css: "text/css",
                         js: "text/javascript",
                         xml: "text/xml",
                         json: "application/json",
@@ -259,11 +258,11 @@ var ChatApp = function() {
                     var chat = self.chats[data.chat_url];
                     if (chat) {
                         if (chat.locked) {
-                            socket.emit('callback', 'join chat', 
+                            socket.emit('callback', 'join chat',
                                 {accepted: false, error: 'Sorry, the chat has been locked'});
                         }
                         else if (chat.chatters.get(data.name)) {
-                            socket.emit('callback', 'join chat', 
+                            socket.emit('callback', 'join chat',
                                 {accepted: false, error: 'Sorry, the username ' + data.name + ' is already in use'});
                         }
                         else {
@@ -271,20 +270,20 @@ var ChatApp = function() {
                             socket.chatter =  new chat.Chatter(data);
                             self.io.sockets.in(chat.chat_name).emit('new chatter', data);
                             socket.join(chat.chat_name);
-                            socket.emit('initialize history', { chat_name: chat.chat_name, 
-                                                                chatters: chat.chatters, 
+                            socket.emit('initialize history', { chat_name: chat.chat_name,
+                                                                chatters: chat.chatters,
                                                                 messages: chat.messages});
                             socket.emit('callback', 'join chat', {accepted: true});
                             self.setupEvents(socket, chat);
                         }
                     }
                     else {
-                        socket.emit('callback', 'join chat', 
+                        socket.emit('callback', 'join chat',
                             {accepted: false, error: 'Sorry, the chat no longer exists'});
                     }
                 }
                 else {
-                    socket.emit('callback', 'join chat', 
+                    socket.emit('callback', 'join chat',
                         {accepted: false, error: 'Sorry, the join request was invalid'});
                 }
             });
@@ -336,7 +335,13 @@ var ChatApp = function() {
     self.initializeServer = function() {
         self.createRoutes();
         self.app = express();
-        self.server = require('http').createServer(self.app);
+        var svrOptions = {
+                key: fs.readFileSync('keys/ssl.key'),
+                cert: fs.readFileSync('keys/ssl.crt'),
+                ca: fs.readFileSync('keys/ca.unified.pem')
+        };
+        keys_dir = 'keys/'
+        self.server = require('https').createServer(svrOptions,self.app);
         self.io = require('socket.io').listen(self.server);
         self.chats = {};
         self.chats['DaveChat'] = self.createChat('DaveChat');
@@ -381,4 +386,3 @@ var ChatApp = function() {
 var zapp = new ChatApp();
 zapp.initialize();
 zapp.start();
-
