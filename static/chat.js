@@ -120,7 +120,7 @@ function Chat($scope) {
 	// Client-side only logic
 	$scope.clientConnection = function () {
 		document.title = $scope.chat_name + ' | ' + document.title;
-		socket = io.connect('https://' + window.location.hostname + ':8000',{ secure: true});
+		socket = io.connect(window.location.protocol + '//' + window.location.hostname + ':' + window.location.port,{ secure: true});
 		socket.callback = {};
 		socket.emitWithCallback = function (name, data, callback) {
 			socket.emit(name, data);

@@ -13,21 +13,20 @@
   "author": {
     "name": "David Timms",
     "email": "davidtimms@btinternet.com",
-    "url":  "http://www.davidtimms.co.uk"
+    "url": "http://www.davidtimms.co.uk"
   },
   "homepage": "http://www.davidtimms.co.uk",
-
   "engines": {
     "node": ">= 0.6.0",
     "npm": ">= 1.0.0"
   },
-
   "dependencies": {
-    "socket.io": "0.9.12"
+    "express": "^4.13.4",
+    "handlebars": "^4.0.5",
+    "socket.io": "^0.9.12"
   },
   "devDependencies": {},
   "bundleDependencies": [],
-
   "private": true,
   "main": "server.js"
 }

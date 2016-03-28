@@ -53,6 +53,14 @@ The following steps will allow you to use ChatSafe securely:
 
   You don't have to. ChatSafe is open source software, meaning anybody can 
   <a href="https://github.com/DavidTimms/ChatSafe">view the source code</a>, so you can check that it does what I say it does.
+
+##Quickstart
+
+```
+git clone <REPO>
+cd ChatSafe
+npm install
+```
   
 ##SSL connection
 
